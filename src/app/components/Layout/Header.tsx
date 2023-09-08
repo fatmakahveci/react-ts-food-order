@@ -11,7 +11,7 @@ const Header = (): JSX.Element => {
         <h1>ReactMeals</h1>
         <button>Cart</button>
       </header>
-      <div>
+      <div className="main-image">
         <Image src={mealsImage} alt="A table full of delicious food!" />
       </div>
     </>
