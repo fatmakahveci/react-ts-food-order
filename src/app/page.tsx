@@ -1,11 +1,12 @@
-"use client";
+'use client';
+import React from 'react';
 
 import './globals.css';
 
-const Home = ({ }): JSX.Element => {
+const Home = (): JSX.Element => {
   return (
-    <div>
-    </div>
+    <>
+    </>
   )
 }
 
