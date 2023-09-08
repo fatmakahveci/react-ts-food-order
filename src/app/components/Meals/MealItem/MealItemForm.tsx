@@ -1,8 +1,11 @@
 'use client';
 
+import './MealItemForm.css';
+
 const MealItemForm = (): JSX.Element => {
   return (
-    <div>MealItemForm</div>
+    <>
+    </>
   )
 }
 export default MealItemForm;

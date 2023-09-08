@@ -1,8 +1,11 @@
 'use client';
 
+import './CartItem.css';
+
 const CartItem = (): JSX.Element => {
   return (
-    <div>CartItem</div>
+    <>
+    </>
   )
 }
 export default CartItem;

@@ -1,8 +1,14 @@
 'use client';
 
+import AvailableMeals from "./AvailableMeals";
+import MealsSummary from "./MealsSummary";
+
 const Meals = (): JSX.Element => {
   return (
-    <div>Meals</div>
+    <>
+      <MealsSummary />
+      <AvailableMeals />
+    </>
   )
 }
 export default Meals;
