@@ -1,4 +1,4 @@
-import { ReactNode } from 'react';
+import { HTMLInputTypeAttribute, ReactNode } from 'react';
 
 export type BackdropProps = {
     onConfirm: () => void;
@@ -20,6 +20,18 @@ export type ErrorMessage = {
     message: string;
 };
 
+export type InputProps = {
+    label: string;
+    input: {
+        id: string;
+        type: HTMLInputTypeAttribute;
+        min: string;
+        max: string;
+        step: string;
+        defaultValue: string;
+    };
+};
+
 export type ModalProps = {
     errorMessage: ErrorMessage;
     onConfirm: () => void;
@@ -27,8 +39,7 @@ export type ModalProps = {
 
 export type Meal = {
     description: string;
-    id: string;
-    key?: string;
+    id?: string;
     name: string;
     price: number;
 };
