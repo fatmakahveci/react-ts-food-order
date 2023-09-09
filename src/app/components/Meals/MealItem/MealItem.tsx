@@ -13,9 +13,9 @@ const MealItem: FC<Meal> = ({ description, id, name, price }): JSX.Element => {
         <h3>{name}</h3>
         <div className="description">{description}</div>
         <div className="price">${price.toFixed(2)}</div>
-        <div>
-          <MealItemForm />
-        </div>
+      </div>
+      <div  className="meal">
+        <MealItemForm />
       </div>
     </li>
   )
