@@ -1,7 +1,7 @@
 import { HTMLInputTypeAttribute, ReactNode } from 'react';
 
 export type BackdropProps = {
-    onConfirm: () => void;
+    onClose: () => void;
 };
 
 export type ButtonProps = {
@@ -15,9 +15,39 @@ export type CardProps = {
     children: ReactNode;
 };
 
-export type ErrorMessage = {
-    title: string;
-    message: string;
+export type CartAction =
+  | { type: 'ADD'; item: CartItemProps }
+  | { type: 'REMOVE'; id: string };
+
+export type CartItemProps = {
+    amount: number;
+    id?: any;
+    key?: string;
+    name: string;
+    onAdd: () => void;
+    onRemove: () => void;
+    price: number;
+};
+
+export type CartProps = {
+    onClose: () => void;
+};
+
+export type CartProviderProps = {
+    children: ReactNode;
+};
+
+export type CartState = {
+    items: CartItemProps[],
+    totalAmount: number,
+};
+
+export type HeaderCartButtonProps = {
+    onClick: () => void;
+};
+
+export type HeaderProps = {
+    onShowCart: () => void;
 };
 
 export type InputProps = {
@@ -32,9 +62,11 @@ export type InputProps = {
     };
 };
 
-export type ModalProps = {
-    errorMessage: ErrorMessage;
-    onConfirm: () => void;
+export type ItemValue = {
+    items: CartItemProps[],
+    totalAmount: number,
+    addItem: (item: CartItemProps) => void,
+    removeItem: (id: string) => void
 };
 
 export type Meal = {
@@ -42,4 +74,13 @@ export type Meal = {
     id?: string;
     name: string;
     price: number;
+};
+
+export type ModalOverlayProps = {
+    children: ReactNode;
+};
+
+export type ModalProps = {
+    onClose: () => void;
+    children: ReactNode;
 };

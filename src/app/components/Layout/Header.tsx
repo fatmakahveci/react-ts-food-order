@@ -1,16 +1,18 @@
 'use client';
 
-import './Header.css';
-import mealsImage from '@/assets/meals.jpg';
+import mealsImage from '@/app/assets/meals.jpg';
+import { HeaderProps } from '@/shared/types/Types';
 import Image from 'next/image';
+import { FC } from 'react';
+import './Header.css';
 import HeaderCartButton from './HeaderCartButton';
 
-const Header = (): JSX.Element => {
+const Header: FC<HeaderProps> = ({ onShowCart }): JSX.Element => {
   return (
     <>
       <header className="header">
         <h1>ReactMeals</h1>
-        <HeaderCartButton />
+        <HeaderCartButton onClick={ onShowCart }/>
       </header>
       <div className="main-image">
         <Image src={mealsImage} alt="A table full of delicious food!" />
