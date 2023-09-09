@@ -9,7 +9,7 @@ const Input: FC<InputProps> = ({ label, input}): JSX.Element => {
     <div className="input">
       <label htmlFor={input["id"]}>{label}</label>
       <input
-        id={input["id"]}
+        id={`amount_${input["id"]}`}
         type={input["type"]}
         min={input["min"]}
         max={input["max"]}
