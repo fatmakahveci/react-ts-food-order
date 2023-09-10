@@ -1,4 +1,4 @@
-import { HTMLInputTypeAttribute, ReactNode } from 'react';
+import { HTMLInputTypeAttribute, ReactNode, Ref } from 'react';
 
 export type BackdropProps = {
     onClose: () => void;
@@ -24,8 +24,8 @@ export type CartItemProps = {
     id?: any;
     key?: string;
     name: string;
-    onAdd: () => void;
-    onRemove: () => void;
+    onAdd?: () => void;
+    onRemove?: () => void;
     price: number;
 };
 
@@ -60,6 +60,7 @@ export type InputProps = {
         step: string;
         defaultValue: string;
     };
+    ref?: Ref<HTMLInputElement> | null;
 };
 
 export type ItemValue = {
@@ -74,6 +75,11 @@ export type Meal = {
     id?: string;
     name: string;
     price: number;
+};
+
+export type MealItemFormProps = {
+    id: string | undefined;
+    onAddToCart: (amount: number) => void;
 };
 
 export type ModalOverlayProps = {

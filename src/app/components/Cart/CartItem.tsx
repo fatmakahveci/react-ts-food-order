@@ -4,13 +4,13 @@ import { CartItemProps } from '@/shared/types/Types';
 import { FC } from 'react';
 import './CartItem.css';
 
-const CartItem: FC<CartItemProps> = ({ amount, key, name, onAdd, onRemove, price }): JSX.Element => {
+const CartItem: FC<CartItemProps> = ({ amount, name, onAdd, onRemove, price }): JSX.Element => {
 
   return (
-    <li className="cart-item" key={key}>
+    <li className="cart-item">
       <div>
         <h2>{name}</h2>
-        <div className="summary">
+        <div>
           <span className="price">${price.toFixed(2)}</span>
           <span className="amount">x {amount}</span>
         </div>

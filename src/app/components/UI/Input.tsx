@@ -1,10 +1,10 @@
 'use client';
 
 import { InputProps } from '@/shared/types/Types';
-import { FC } from 'react';
+import { FC, forwardRef } from 'react';
 import './Input.css';
 
-const Input: FC<InputProps> = ({ label, input}): JSX.Element => {
+const Input: FC<InputProps> = forwardRef(({label, input}, ref) => {
   return (
     <div className="input">
       <label htmlFor={input["id"]}>{label}</label>
@@ -13,10 +13,12 @@ const Input: FC<InputProps> = ({ label, input}): JSX.Element => {
         type={input["type"]}
         min={input["min"]}
         max={input["max"]}
+        ref={ref}
         step={input["step"]}
         defaultValue={input["defaultValue"]}
       />
-    </div>        
+    </div>
   )
-}
+});
+
 export default Input;

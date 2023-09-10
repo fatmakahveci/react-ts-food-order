@@ -1,11 +1,22 @@
 'use client';
 
-import { Meal } from '@/shared/types/Types';
-import { FC } from 'react';
+import { ItemValue, Meal } from '@/shared/types/Types';
+import { FC, useContext } from 'react';
 import './MealItem.css';
 import MealItemForm from './MealItemForm';
+import CartContext from '@/app/store/cart-context';
 
 const MealItem: FC<Meal> = ({ description, id, name, price }): JSX.Element => {
+  const cartCtx: ItemValue = useContext<ItemValue>(CartContext);
+
+  const addToCartHandler = (amount: number) => {
+    cartCtx.addItem({
+      id: id,
+      name: name,
+      amount: amount,
+      price: price
+    });
+  };
 
   return (
     <li key={id} className="meal">
@@ -15,7 +26,7 @@ const MealItem: FC<Meal> = ({ description, id, name, price }): JSX.Element => {
         <div className="price">${price.toFixed(2)}</div>
       </div>
       <div  className="meal">
-        <MealItemForm />
+        <MealItemForm id={id} onAddToCart={addToCartHandler} />
       </div>
     </li>
   )

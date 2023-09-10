@@ -16,8 +16,6 @@ const HeaderCartButton: FC<HeaderCartButtonProps> = ({ onClick }): JSX.Element =
     return curNumber + item.amount;
   }, 0);
 
-  const btnClasses = `button ${btnIsHighlighted ? 'bump' : ''}`;
-
   useEffect(() => {
     if (items.length === 0) {
       return;
@@ -34,7 +32,7 @@ const HeaderCartButton: FC<HeaderCartButtonProps> = ({ onClick }): JSX.Element =
   }, [items]);
 
   return (
-    <button className='button' onClick={onClick}>
+    <button className={`button ${btnIsHighlighted ? 'bump' : ''}`} onClick={onClick}>
       <span className='icon'>
         <CartIcon />
       </span>
