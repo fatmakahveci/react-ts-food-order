@@ -1,14 +1,10 @@
-'use client';
+"use client";
 
-import { CardProps } from '@/shared/types/Types';
-import { FC } from 'react';
-import './Card.css';
+import { CardProps } from "@/shared/types";
+import { FC } from "react";
+import "./Card.css";
 
 const Card: FC<CardProps> = ({ cssName, children }) => {
-  return (
-    <div className={`card ${cssName}`}>
-        {children}
-    </div>
-  )
-}
+	return <div className={`card ${cssName}`}>{children}</div>;
+};
 export default Card;
