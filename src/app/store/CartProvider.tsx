@@ -1,7 +1,7 @@
 'use client';
 
 import { FC, useReducer } from 'react';
-import { CartAction, CartItemProps, CartProviderProps, CartState, ItemValue } from '@/shared/types';
+import { CartAction, CartItemProps, CartProviderProps, CartState, ItemValue } from '@/shared/types/Types';
 import CartContext from './cart-context';
 import { DEFAULT_CART_STATE } from '@/shared/constants';
 

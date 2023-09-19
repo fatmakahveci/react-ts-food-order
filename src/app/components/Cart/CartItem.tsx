@@ -1,6 +1,6 @@
 'use client';
 
-import { CartItemProps } from '@/shared/types';
+import { CartItemProps } from '@/shared/types/Types';
 import { FC } from 'react';
 import './CartItem.css';
 

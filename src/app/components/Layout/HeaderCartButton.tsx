@@ -2,7 +2,7 @@
 
 import CartIcon from '@/app/components/Cart/CartIcon';
 import CartContext from '@/app/store/cart-context';
-import { HeaderCartButtonProps, ItemValue } from '@/shared/types';
+import { HeaderCartButtonProps, ItemValue } from '@/shared/types/Types';
 import { FC, useContext, useEffect, useState } from 'react';
 import './HeaderCartButton.css';
 

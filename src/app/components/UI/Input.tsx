@@ -1,6 +1,6 @@
 'use client';
 
-import { InputProps } from '@/shared/types';
+import { InputProps } from '@/shared/types/Types';
 import { FC, forwardRef } from 'react';
 import './Input.css';
 

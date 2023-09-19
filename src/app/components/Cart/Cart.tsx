@@ -3,7 +3,7 @@
 import CartItem from '@/app/components/Cart/CartItem';
 import Modal from '@/app/components/UI/Modal';
 import CartContext from '@/app/store/cart-context';
-import { CartItemProps, CartProps, ItemValue } from '@/shared/types';
+import { CartItemProps, CartProps, ItemValue } from '@/shared/types/Types';
 import { FC, useContext } from 'react';
 import './Cart.css';
 

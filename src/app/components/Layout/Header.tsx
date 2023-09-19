@@ -1,7 +1,7 @@
 'use client';
 
 import mealsImage from '@/app/assets/meals.jpg';
-import { HeaderProps } from '@/shared/types';
+import { HeaderProps } from '@/shared/types/Types';
 import Image from 'next/image';
 import { FC } from 'react';
 import './Header.css';
