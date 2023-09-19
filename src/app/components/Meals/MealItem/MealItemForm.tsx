@@ -1,7 +1,7 @@
 'use client';
 
 import Input from '@/app/components/UI/Input';
-import { MealItemFormProps } from '@/shared/types/Types';
+import { MealItemFormProps } from '@/shared/types';
 import { FC, FormEvent, useRef, useState } from 'react';
 import './MealItemForm.css';
 

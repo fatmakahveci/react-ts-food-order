@@ -1,6 +1,6 @@
 'use client';
 
-import { BackdropProps, ModalOverlayProps, ModalProps } from '@/shared/types/Types';
+import { BackdropProps, ModalOverlayProps, ModalProps } from '@/shared/types';
 import { FC } from 'react';
 import { createPortal } from 'react-dom';
 import './Modal.css';

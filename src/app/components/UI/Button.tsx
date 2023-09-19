@@ -1,6 +1,6 @@
 'use client';
 
-import { ButtonProps } from '@/shared/types/Types';
+import { ButtonProps } from '@/shared/types';
 import { FC } from 'react';
 import './Button.css';
 

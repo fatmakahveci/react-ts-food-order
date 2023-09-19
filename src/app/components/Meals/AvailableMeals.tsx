@@ -2,7 +2,7 @@
 
 import MealItem from '@/app/components/Meals/MealItem/MealItem';
 import Card from '@/app/components/UI/Card';
-import { Meal } from '@/shared/types/Types';
+import { Meal } from '@/shared/types';
 import './AvailableMeals.css';
 
 const DUMMY_MEALS: Meal[] = [

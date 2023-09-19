@@ -1,6 +1,6 @@
 'use client';
 
-import { ItemValue, Meal } from '@/shared/types/Types';
+import { ItemValue, Meal } from '@/shared/types';
 import { FC, useContext } from 'react';
 import './MealItem.css';
 import MealItemForm from './MealItemForm';

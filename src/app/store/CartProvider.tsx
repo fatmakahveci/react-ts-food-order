@@ -1,9 +1,9 @@
 'use client';
 
 import { FC, useReducer } from 'react';
-import { CartAction, CartItemProps, CartProviderProps, CartState, ItemValue } from '@/shared/types/Types';
+import { CartAction, CartItemProps, CartProviderProps, CartState, ItemValue } from '@/shared/types';
 import CartContext from './cart-context';
-import { DEFAULT_CART_STATE } from '@/shared/constants/Constants';
+import { DEFAULT_CART_STATE } from '@/shared/constants';
 
 const cartReducer = (state: CartState, action: CartAction) => {
   if (action.type === 'ADD') {

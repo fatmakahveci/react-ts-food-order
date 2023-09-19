@@ -1,6 +1,6 @@
 'use client';
 
-import { CardProps } from '@/shared/types/Types';
+import { CardProps } from '@/shared/types';
 import { FC } from 'react';
 import './Card.css';
 
