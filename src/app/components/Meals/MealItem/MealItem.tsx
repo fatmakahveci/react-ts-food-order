@@ -1,15 +1,15 @@
 "use client";
 
+import CartContext from "@/app/store/cart-context";
 import { ItemValue, Meal } from "@/shared/types";
 import { FC, useContext } from "react";
 import "./MealItem.css";
 import MealItemForm from "./MealItemForm";
-import CartContext from "@/app/store/cart-context";
 
 const MealItem: FC<Meal> = ({ description, id, name, price }): JSX.Element => {
 	const cartCtx: ItemValue = useContext<ItemValue>(CartContext);
 
-	const addToCartHandler = (amount: number) => {
+	const addToCartHandler = (amount: number): void => {
 		cartCtx.addItem({
 			id: id,
 			name: name,
