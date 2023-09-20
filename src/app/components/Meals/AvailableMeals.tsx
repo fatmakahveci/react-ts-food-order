@@ -9,12 +9,18 @@ import "./AvailableMeals.css";
 const AvailableMeals = (): JSX.Element => {
 	const [meals, setMeals] = useState<Meal[]>([]);
 	const [isLoading, setIsLoading] = useState<boolean>(true);
+	const [httpError, setHttpError] = useState<string | null>(null);
 
 	useEffect(() => {
 		const fetchMeals = async () => {
 			const response: Response = await fetch(
 				"https://react-ts-food-order-default-rtdb.firebaseio.com/meals.json"
 			);
+
+			if (!response.ok) {
+				throw new Error("Something went wrong!");
+			}
+
 			const responseData: Meal[] = await response.json();
 			const loadedMeals: Meal[] = [];
 			for (const key in responseData) {
@@ -28,13 +34,25 @@ const AvailableMeals = (): JSX.Element => {
 			setMeals(loadedMeals);
 			setIsLoading(false);
 		};
-		fetchMeals();
+
+		fetchMeals().catch((e) => {
+			setIsLoading(false);
+			setHttpError(e.message);
+		});
 	}, []);
 
 	if (isLoading) {
 		return (
 			<section className="MealsLoading">
 				<p>Loading...</p>
+			</section>
+		);
+	}
+
+	if (httpError) {
+		return (
+			<section className="MealsLoading">
+				<p>{httpError}</p>
 			</section>
 		);
 	}
