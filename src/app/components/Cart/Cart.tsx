@@ -6,6 +6,7 @@ import CartContext from "@/app/store/cart-context";
 import { CartItemProps, CartProps, ItemValue } from "@/shared/types";
 import { FC, useContext } from "react";
 import "./Cart.css";
+import Checkout from "./Checkout";
 
 const Cart: FC<CartProps> = ({ onClose }): JSX.Element => {
 	const cartCtx: ItemValue = useContext<ItemValue>(CartContext);
@@ -43,6 +44,7 @@ const Cart: FC<CartProps> = ({ onClose }): JSX.Element => {
 				<span>Total Amount</span>
 				<span>{totalAmount}</span>
 			</div>
+			<Checkout />
 			<div className="actions">
 				<button className="button--alt" onClick={onClose}>
 					Close

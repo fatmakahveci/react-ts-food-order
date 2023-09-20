@@ -1,3 +1,5 @@
+"use client";
+
 import { CartState } from "@/shared/types";
 
 export const DEFAULT_CART_STATE: CartState = {

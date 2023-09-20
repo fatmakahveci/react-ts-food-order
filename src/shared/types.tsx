@@ -1,3 +1,5 @@
+"use client";
+
 import { HTMLInputTypeAttribute, ReactNode, Ref } from "react";
 
 export type BackdropProps = {
@@ -40,6 +42,10 @@ export type CartProviderProps = {
 export type CartState = {
 	items: CartItemProps[];
 	totalAmount: number;
+};
+
+export type CheckoutProps = {
+	onCancel: () => void;
 };
 
 export type HeaderCartButtonProps = {
