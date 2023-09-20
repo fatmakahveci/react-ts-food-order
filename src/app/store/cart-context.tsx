@@ -4,10 +4,11 @@ import { ItemValue } from "@/shared/types";
 import { Context, createContext } from "react";
 
 const CartContext: Context<ItemValue> = createContext<ItemValue>({
-	items: [],
-	totalAmount: 0,
 	addItem: () => {},
+	clearCart: () => {},
+	items: [],
 	removeItem: () => {},
+	totalAmount: 0,
 });
 
 export default CartContext;

@@ -7,18 +7,19 @@ export type BackdropProps = {
 };
 
 export type ButtonProps = {
-	type: "submit" | "reset" | "button" | undefined;
 	children: ReactNode;
 	onClick?: (e: React.MouseEvent<HTMLButtonElement>) => void;
+	type: "submit" | "reset" | "button" | undefined;
 };
 
 export type CardProps = {
-	cssName: string;
 	children: ReactNode;
+	cssName: string;
 };
 
 export type CartAction =
 	| { type: "ADD"; item: CartItemProps }
+	| { type: "CLEAR" }
 	| { type: "REMOVE"; id: string };
 
 export type CartItemProps = {
@@ -46,6 +47,21 @@ export type CartState = {
 
 export type CheckoutProps = {
 	onCancel: () => void;
+	onConfirm: (formInput: FormInput) => void;
+};
+
+export type FormInput = {
+	city: string | undefined;
+	name: string | undefined;
+	postalCode: string | undefined;
+	street: string | undefined;
+};
+
+export type FormInputValidity = {
+	city: boolean;
+	name: boolean;
+	postalCode: boolean;
+	street: boolean;
 };
 
 export type HeaderCartButtonProps = {
@@ -57,23 +73,24 @@ export type HeaderProps = {
 };
 
 export type InputProps = {
-	label: string;
 	input: {
-		id: string;
-		type: HTMLInputTypeAttribute;
-		min: string;
-		max: string;
-		step: string;
 		defaultValue: string;
+		id: string;
+		max: string;
+		min: string;
+		step: string;
+		type: HTMLInputTypeAttribute;
 	};
+	label: string;
 	ref?: Ref<HTMLInputElement> | null;
 };
 
 export type ItemValue = {
-	items: CartItemProps[];
-	totalAmount: number;
 	addItem: (item: CartItemProps) => void;
+	clearCart: () => void;
+	items: CartItemProps[];
 	removeItem: (id: string) => void;
+	totalAmount: number;
 };
 
 export type Meal = {
@@ -93,6 +110,6 @@ export type ModalOverlayProps = {
 };
 
 export type ModalProps = {
-	onClose: () => void;
 	children: ReactNode;
+	onClose: () => void;
 };
