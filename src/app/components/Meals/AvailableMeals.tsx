@@ -8,6 +8,7 @@ import "./AvailableMeals.css";
 
 const AvailableMeals = (): JSX.Element => {
 	const [meals, setMeals] = useState<Meal[]>([]);
+	const [isLoading, setIsLoading] = useState<boolean>(true);
 
 	useEffect(() => {
 		const fetchMeals = async () => {
@@ -25,9 +26,18 @@ const AvailableMeals = (): JSX.Element => {
 				});
 			}
 			setMeals(loadedMeals);
+			setIsLoading(false);
 		};
 		fetchMeals();
 	}, []);
+
+	if (isLoading) {
+		return (
+			<section className="MealsLoading">
+				<p>Loading...</p>
+			</section>
+		);
+	}
 
 	const mealsList: JSX.Element[] = meals.map((meal) => (
 		<MealItem
