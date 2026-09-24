@@ -1,32 +1,48 @@
 "use client";
 
-import Cart from "@/app/components/Cart/Cart";
-import Header from "@/app/components/Layout/Header";
-import Meals from "@/app/components/Meals/Meals";
-import CartProvider from "@/app/store/CartProvider";
-import { useState } from "react";
-import "./globals.css";
+import { useContext, useEffect, useRef, useState } from "react";
+import CartProvider from "./store/CartProvider";
+import CartContext from "./store/cart-context";
 
-const Home = (): JSX.Element => {
-	const [cartIsShown, setCartIsShown] = useState<boolean>(false);
-
-	const showCartHandler = (): void => {
-		setCartIsShown(true);
-	};
-
-	const hideCartHandler = (): void => {
-		setCartIsShown(false);
-	};
-
-	return (
-		<CartProvider>
-			{cartIsShown && <Cart onClose={hideCartHandler} />}
-			<Header onShowCart={showCartHandler} />
-			<main>
-				<Meals />
-			</main>
-		</CartProvider>
-	);
-};
-
-export default Home;
+const photo = (id: string, width = 700) => `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${width}&q=85`;
+const meals = [
+  { id: "burger", name: "Klasik Cheeseburger", category: "Burger", price: 245, description: "Dana köfte, cheddar, karamelize soğan ve özel sos.", image: "photo-1568901346375-23c9450c58cd", tag: "Çok sevilen", time: "20–30 dk" },
+  { id: "pizza", name: "Margherita Pizza", category: "Pizza", price: 285, description: "İnce hamur, mozzarella, domates sosu ve taze fesleğen.", image: "photo-1574071318508-1cdbab80d002", tag: "Vejetaryen", time: "25–35 dk" },
+  { id: "bowl", name: "Akdeniz Bowl", category: "Sağlıklı", price: 220, description: "Mevsim yeşillikleri, avokado ve rengârenk sebzeler.", image: "photo-1512621776951-a57141f2eefd", tag: "Hafif & taze", time: "15–25 dk" },
+  { id: "pasta", name: "İtalyan Usulü Makarna", category: "Makarna", price: 260, description: "Domates sosu, taze otlar ve parmesan dokunuşu.", image: "photo-1473093295043-cdd812d0e601", tag: "Şefin seçimi", time: "20–30 dk" },
+  { id: "sweet", name: "Çikolatalı Brownie", category: "Tatlı", price: 135, description: "Yoğun bitter çikolata, yumuşacık iç, mutluluk garantili.", image: "photo-1606313564200-e75d5e30476c", tag: "Tatlı bir mola", time: "15–20 dk" },
+  { id: "salad", name: "Bahçe Salatası", category: "Sağlıklı", price: 195, description: "Günün sebzeleri, çıtır yeşillikler ve limonlu sos.", image: "photo-1511690743698-d9d85f2fbf38", tag: "Mevsiminde", time: "15–25 dk" },
+];
+const categories = ["Tümü", "Burger", "Pizza", "Sağlıklı", "Makarna", "Tatlı"];
+const money = (value: number) => new Intl.NumberFormat("tr-TR", { style: "currency", currency: "TRY", maximumFractionDigits: 0 }).format(value);
+function Icon({ name, size = 20 }: { name: "bag" | "search" | "arrow" | "clock" | "pin"; size?: number }) {
+  const paths = { bag: "M5 7h14l1 14H4L5 7ZM9 8V6a3 3 0 0 1 6 0v2", search: "m21 21-5-5M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0", arrow: "M4 12h16m-6-6 6 6-6 6", clock: "M12 8v5l3 2M22 12a10 10 0 1 1-20 0 10 10 0 0 1 20 0", pin: "M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 1 1 16 0ZM15 10a3 3 0 1 1-6 0 3 3 0 0 1 6 0" };
+  return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d={paths[name]} /></svg>;
+}
+function Experience() {
+  const cart = useContext(CartContext);
+  const [category, setCategory] = useState("Tümü");
+  const [search, setSearch] = useState("");
+  const [stage, setStage] = useState<"cart" | "checkout" | "done">("cart");
+  const [notice, setNotice] = useState("");
+  const dialog = useRef<HTMLDialogElement>(null);
+  const count = cart.items.reduce((sum, item) => sum + item.amount, 0);
+  const shown = meals.filter(meal => (category === "Tümü" || meal.category === category) && `${meal.name} ${meal.description}`.toLocaleLowerCase("tr").includes(search.toLocaleLowerCase("tr")));
+  useEffect(() => { if (!notice) return; const timeout = setTimeout(() => setNotice(""), 2200); return () => clearTimeout(timeout); }, [notice]);
+  const openCart = () => { setStage("cart"); dialog.current?.showModal(); };
+  const add = (meal: typeof meals[number]) => { cart.addItem({ id: meal.id, name: meal.name, price: meal.price, amount: 1 }); setNotice(`${meal.name} sepete eklendi`); };
+  return <>
+    <div className="announcement">İyi yemek, güzel bir günün başlangıcı. <span>Her lokmada mutluluk.</span></div>
+    <header className="header container"><a className="brand" href="#" aria-label="Lokma ana sayfa"><span className="brand-mark">l.</span>lokma<span className="brand-dot">.</span></a><nav aria-label="Ana menü"><a href="#menu" className="active">Menü</a><a href="#about">Neden Lokma?</a><a href="#help">Sıkça sorulanlar</a></nav><button className="cart-button" onClick={openCart}><Icon name="bag" /><span>Sepetim</span><b>{count}</b></button></header>
+    <main>
+      <section className="hero container"><div className="hero-copy"><div className="eyebrow"><span /> TAZE HAZIRLANIR, KEYİFLE YENİR</div><h1>Canın ne çekerse,<br /><em>bir lokma</em> uzağında.</h1><p>Özenle seçilmiş malzemeler, sevdiğin lezzetler.<br />Günün en güzel molası için sofrayı biz kuralım.</p><a className="primary" href="#menu">Menüyü keşfet <Icon name="arrow" /></a><div className="hero-notes"><span><Icon name="clock" size={17} /> Sıcacık & taptaze</span><span><span className="tiny-star">✦</span> Özenle hazırlanan lezzetler</span></div></div><div className="hero-visual"><img className="hero-image" src={photo("photo-1568901346375-23c9450c58cd", 1100)} alt="Taze sebzeler ve erimiş cheddar ile hazırlanan burger" fetchPriority="high" /><div className="image-label">İYİ MALZEME.<br />GERÇEK LEZZET.</div><div className="floating-card"><span className="floating-icon">✦</span><div><strong>Bugünün favorisi</strong><span>Klasik Cheeseburger</span></div><button aria-label="Klasik Cheeseburger sepete ekle" onClick={() => add(meals[0])}>↗</button></div><div className="round-stamp">MUTLULUK<br /><b>bir lokma</b><br />İLE BAŞLAR</div></div></section>
+      <div className="perks container"><span><b>01</b> Gerçek malzemeler</span><span><b>02</b> Siparişine özel hazırlanır</span><span><b>03</b> Her damak tadına uygun</span><span><b>04</b> Son lokmaya kadar keyif</span></div>
+      <section className="menu-section container" id="menu"><div className="section-top"><div><div className="eyebrow">GÜZEL BİR SEÇİM YAP</div><h2>Bugün ne yesek?</h2></div><label className="search"><Icon name="search" /><input value={search} onChange={e => setSearch(e.target.value)} placeholder="Canın ne çekiyor?" aria-label="Menüde ara" />{search && <button aria-label="Aramayı temizle" onClick={() => setSearch("")}>×</button>}</label></div><div className="category-bar">{categories.map((item, i) => <button key={item} className={category === item ? "selected" : ""} onClick={() => setCategory(item)} aria-pressed={category === item}><span aria-hidden="true">{["✦", "◒", "◔", "❋", "≋", "♡"][i]}</span>{item}</button>)}<span className="result-count">{shown.length} lezzet seni bekliyor</span></div><div className="meal-grid">{shown.map(meal => <article className="meal-card" key={meal.id}><div className="meal-photo"><img src={photo(meal.image)} alt={meal.name} loading="lazy" /><span className={`tag ${meal.category === "Sağlıklı" || meal.category === "Pizza" ? "green" : ""}`}>{meal.tag}</span></div><div className="meal-info"><div className="meal-meta"><span>{meal.category}</span><span><Icon name="clock" size={13} />{meal.time}</span></div><h3>{meal.name}</h3><p>{meal.description}</p><div className="meal-bottom"><strong>{money(meal.price)}</strong><button onClick={() => add(meal)} aria-label={`${meal.name} sepete ekle`}><span>Sepete ekle</span> +</button></div></div></article>)}</div>{shown.length === 0 && <div className="empty-state"><h3>Bu lezzeti bulamadık.</h3><p>Başka bir kelime dene veya tüm menüye göz at.</p><button className="primary" onClick={() => {setSearch(""); setCategory("Tümü");}}>Tüm menüyü göster</button></div>}</section>
+      <section className="story container" id="about"><div className="story-symbol">✳</div><div><div className="eyebrow">BİZİM TARİFİMİZ ÇOK BASİT</div><h2>İyi yemek. İyi hissettirir.</h2><p>Mevsimin tazeliğini, mutfağın özenini ve paylaşmanın mutluluğunu<br className="desktop" /> aynı sofrada buluşturuyoruz. Çünkü her öğün güzel olmayı hak eder.</p></div><a href="#menu" className="text-link">Bir lezzet seç <Icon name="arrow" /></a></section>
+      <section id="help" className="faq container"><div><div className="eyebrow">AKLINDA BULUNSUN</div><h2>Küçük sorular,<br />net cevaplar.</h2></div><div className="faq-items"><details><summary>Nasıl sipariş verebilirim?</summary><p>Menüden seçtiklerini sepete ekle, miktarları düzenle ve teslimat formunu doldur. Bu örnek sitede siparişler demo olarak tamamlanır; ödeme alınmaz ve teslimat yapılmaz.</p></details><details><summary>Vejetaryen seçenekler var mı?</summary><p>Pizza ve Sağlıklı kategorilerindeki seçenekleri inceleyebilirsin. Alerjen bilgisi ve özel beslenme ihtiyaçları için gerçek sipariş öncesinde restoranla iletişime geçilmelidir.</p></details><details><summary>Teslimat süresi ne kadar?</summary><p>Kartlardaki süreler örnek hazırlık ve teslimat tahminleridir. Bu demo gerçek teslimat hizmeti sunmaz.</p></details></div></section>
+    </main><footer className="container"><a href="#" className="brand">lokma<span className="brand-dot">.</span></a><span>Güzel lezzetler, güzel anlar.</span><small>© {new Date().getFullYear()} Lokma · Örnek restoran deneyimi</small></footer>
+    <div className={`toast ${notice ? "visible" : ""}`} role="status">✓ {notice}</div>
+    <dialog ref={dialog} className="cart-dialog" onClick={e => {if(e.target === e.currentTarget) dialog.current?.close();}}><div className="dialog-header"><h2>{stage === "done" ? "Teşekkürler!" : stage === "checkout" ? "Teslimat bilgileri" : "Sepetim"}</h2><button className="close" onClick={() => dialog.current?.close()} aria-label="Sepeti kapat">×</button></div>{stage === "done" ? <div className="empty-state"><span className="success-icon">✓</span><h3>Demo siparişin tamamlandı.</h3><p>Bu bir örnek deneyimdir. Ödeme alınmadı ve gerçek sipariş oluşturulmadı.</p><button className="primary" onClick={() => dialog.current?.close()}>Menüye dön</button></div> : stage === "checkout" ? <form className="checkout" onSubmit={e => {e.preventDefault(); cart.clearCart(); setStage("done");}}><p className="demo-note">Demo sipariş · Bilgilerin gönderilmez veya kaydedilmez.</p><label>Ad soyad<input name="name" required minLength={2} autoComplete="name" /></label><label>Telefon<input name="phone" type="tel" required pattern="[+0-9 ()-]{10,20}" autoComplete="tel" /></label><label>Teslimat adresi<textarea name="address" required minLength={10} autoComplete="street-address" rows={3} /></label><div className="total"><span>Toplam</span><strong>{money(cart.totalAmount)}</strong></div><button className="primary" type="submit">Demo siparişi tamamla <Icon name="arrow" /></button><button type="button" className="back" onClick={() => setStage("cart")}>Sepete dön</button></form> : cart.items.length ? <><div className="cart-items">{cart.items.map(item => <div key={item.id} className="cart-row"><img src={photo(meals.find(m => m.id === item.id)!.image, 150)} alt="" /><div><h3>{item.name}</h3><strong>{money(item.price * item.amount)}</strong></div><div className="quantity"><button onClick={() => cart.removeItem(item.id)} aria-label={`${item.name} azalt`}>−</button><span>{item.amount}</span><button onClick={() => cart.addItem({...item, amount: 1})} aria-label={`${item.name} artır`}>+</button></div></div>)}</div><div className="total"><span>Toplam</span><strong>{money(cart.totalAmount)}</strong></div><p className="demo-note">Örnek menü ve fiyatlar · Gerçek ödeme alınmaz.</p><button className="primary wide" onClick={() => setStage("checkout")}>Siparişe devam et <Icon name="arrow" /></button></> : <div className="empty-state"><Icon name="bag" size={40} /><h3>Güzel bir lokmaya yer var.</h3><p>Menüden favorilerini seç, sepetin lezzetlensin.</p><button className="primary" onClick={() => dialog.current?.close()}>Menüyü keşfet</button></div>}</dialog>
+  </>;
+}
+export default function Home() { return <CartProvider><Experience /></CartProvider>; }
