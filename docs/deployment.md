@@ -49,7 +49,7 @@ rebuilding does not update existing files.
 | Variable | Purpose | Local default |
 | --- | --- | --- |
 | `NEXT_PUBLIC_BASE_PATH` | Prefix for Next.js routes and assets, such as `/react-ts-food-order`. Use an empty value for a root-hosted site. | Empty |
-| `SITE_URL` | Absolute deployment URL, including any repository path, used for social metadata. | `https://fatmakahveci.com/react-ts-food-order/` |
+| `SITE_URL` | Absolute deployment URL, including any repository path, used for social metadata. | `https://fatmakahveci.github.io/react-ts-food-order/` |
 
 For `main`, the workflow reads the base path and site URL from `configure-pages`.
 Pull request builds use `/react-ts-food-order` and
@@ -86,22 +86,16 @@ are enabled for the repository. Check repository and environment permissions.
 Compare the deployed path with `NEXT_PUBLIC_BASE_PATH`. Rebuild using the correct
 path and deploy the new artifact. Do not manually edit generated files in `out/`.
 
-### Deployment succeeds but the domain does not open
+### Deployment succeeds but the site does not open
 
-A successful deployment does not establish that the domain's DNS resolves.
-Check the Pages URL and its redirects separately from the Actions result.
+Open `https://fatmakahveci.github.io/react-ts-food-order/` and check its response
+separately from the Actions result. The account-level custom domain was removed
+at the owner's request; the account website and project now use GitHub Pages
+addresses. Keep both custom-domain settings empty.
 
-During the first deployment check on **25 September 2026**, the default
-`fatmakahveci.github.io/react-ts-food-order/` URL redirected to
-`http://fatmakahveci.com/react-ts-food-order/`, and the custom domain did not
-resolve from the verification environment. This is a recorded observation, not a
-live health check. Verify current Pages and DNS settings before changing them.
-An inherited account-level custom domain can affect other repositories; review
-that scope before removing or changing it.
-
-The follow-up check confirmed `SERVFAIL` at the DNS resolver. The owner chose to
-keep the domain. Follow the [provider repair steps](domain-repair.md); DNS and
-HTTPS restoration remain external prerequisites for public access.
+See the [GitHub Pages address and verification guide](domain-repair.md). Rebuild
+after changing Pages settings so canonical and social URLs reflect the deployed
+address.
 
 ## Source Packages
 
