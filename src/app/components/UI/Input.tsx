@@ -21,4 +21,6 @@ const Input: FC<InputProps> = forwardRef(({ label, input }, ref) => {
 	);
 });
 
+Input.displayName = "Input";
+
 export default Input;

@@ -24,7 +24,7 @@ export type CartAction =
 
 export type CartItemProps = {
 	amount: number;
-	id?: any;
+	id: string;
 	key?: string;
 	name: string;
 	onAdd?: () => void;
@@ -95,7 +95,7 @@ export type ItemValue = {
 
 export type Meal = {
 	description: string;
-	id?: string;
+	id: string;
 	name: string;
 	price: number;
 };
