@@ -1,6 +1,6 @@
 "use client";
 
-import { FC, useReducer } from "react";
+import { FC, type JSX, useReducer } from "react";
 import {
 	CartAction,
 	CartItemProps,
