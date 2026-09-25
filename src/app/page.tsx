@@ -206,7 +206,11 @@ function Experience() {
         <a href="#" className="brand">
           lokma<span className="brand-dot">.</span>
         </a>
-        <span>Good flavours. Great moments.</span>
+        <span>
+          Good flavours. Great moments.
+          <br />
+          <span className="footer-note">Made for the love of good food.</span>
+        </span>
         <small>
           © {new Date().getFullYear()} Lokma · Demo restaurant experience
         </small>
