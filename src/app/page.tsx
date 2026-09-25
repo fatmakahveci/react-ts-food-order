@@ -1,32 +1,48 @@
 "use client";
 
-import Cart from "@/app/components/Cart/Cart";
-import Header from "@/app/components/Layout/Header";
-import Meals from "@/app/components/Meals/Meals";
-import CartProvider from "@/app/store/CartProvider";
-import { useState } from "react";
-import "./globals.css";
+import { useContext, useEffect, useRef, useState } from "react";
+import CartProvider from "./store/CartProvider";
+import CartContext from "./store/cart-context";
 
-const Home = (): JSX.Element => {
-	const [cartIsShown, setCartIsShown] = useState<boolean>(false);
-
-	const showCartHandler = (): void => {
-		setCartIsShown(true);
-	};
-
-	const hideCartHandler = (): void => {
-		setCartIsShown(false);
-	};
-
-	return (
-		<CartProvider>
-			{cartIsShown && <Cart onClose={hideCartHandler} />}
-			<Header onShowCart={showCartHandler} />
-			<main>
-				<Meals />
-			</main>
-		</CartProvider>
-	);
-};
-
-export default Home;
+const photo = (id: string, width = 700) => `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${width}&q=85`;
+const meals = [
+  { id: "burger", name: "Classic Cheeseburger", category: "Burger", price: 245, description: "Beef patty, cheddar, caramelized onions and our signature sauce.", image: "photo-1568901346375-23c9450c58cd", tag: "Bestseller", time: "20–30 min" },
+  { id: "pizza", name: "Margherita Pizza", category: "Pizza", price: 285, description: "Thin crust, mozzarella, tomato sauce and fresh basil.", image: "photo-1574071318508-1cdbab80d002", tag: "Vegetarian", time: "25–35 min" },
+  { id: "bowl", name: "Mediterranean Bowl", category: "Healthy", price: 220, description: "Seasonal greens, avocado and a colourful mix of vegetables.", image: "photo-1512621776951-a57141f2eefd", tag: "Light & fresh", time: "15–25 min" },
+  { id: "pasta", name: "Italian Pasta", category: "Pasta", price: 260, description: "Tomato sauce, fresh herbs and a finishing touch of parmesan.", image: "photo-1473093295043-cdd812d0e601", tag: "Chef’s choice", time: "20–30 min" },
+  { id: "sweet", name: "Chocolate Brownie", category: "Desserts", price: 135, description: "Rich dark chocolate, a fudgy centre and a little moment of joy.", image: "photo-1606313564200-e75d5e30476c", tag: "A sweet break", time: "15–20 min" },
+  { id: "salad", name: "Garden Salad", category: "Healthy", price: 195, description: "Fresh vegetables, crisp greens and a bright lemon dressing.", image: "photo-1511690743698-d9d85f2fbf38", tag: "In season", time: "15–25 min" },
+];
+const categories = ["All", "Burger", "Pizza", "Healthy", "Pasta", "Desserts"];
+const money = (value: number) => new Intl.NumberFormat("en-GB", { style: "currency", currency: "TRY", maximumFractionDigits: 0 }).format(value);
+function Icon({ name, size = 20 }: { name: "bag" | "search" | "arrow" | "clock" | "pin"; size?: number }) {
+  const paths = { bag: "M5 7h14l1 14H4L5 7ZM9 8V6a3 3 0 0 1 6 0v2", search: "m21 21-5-5M18 10a8 8 0 1 1-16 0 8 8 0 0 1 16 0", arrow: "M4 12h16m-6-6 6 6-6 6", clock: "M12 8v5l3 2M22 12a10 10 0 1 1-20 0 10 10 0 0 1 20 0", pin: "M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 1 1 16 0ZM15 10a3 3 0 1 1-6 0 3 3 0 0 1 6 0" };
+  return <svg width={size} height={size} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.7" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d={paths[name]} /></svg>;
+}
+function Experience() {
+  const cart = useContext(CartContext);
+  const [category, setCategory] = useState("All");
+  const [search, setSearch] = useState("");
+  const [stage, setStage] = useState<"cart" | "checkout" | "done">("cart");
+  const [notice, setNotice] = useState("");
+  const dialog = useRef<HTMLDialogElement>(null);
+  const count = cart.items.reduce((sum, item) => sum + item.amount, 0);
+  const shown = meals.filter(meal => (category === "All" || meal.category === category) && `${meal.name} ${meal.description}`.toLocaleLowerCase("en").includes(search.toLocaleLowerCase("en")));
+  useEffect(() => { if (!notice) return; const timeout = setTimeout(() => setNotice(""), 2200); return () => clearTimeout(timeout); }, [notice]);
+  const openCart = () => { setStage("cart"); dialog.current?.showModal(); };
+  const add = (meal: typeof meals[number]) => { cart.addItem({ id: meal.id, name: meal.name, price: meal.price, amount: 1 }); setNotice(`${meal.name} added to your cart`); };
+  return <>
+    <div className="announcement">Good food makes a great day. <span>Happiness in every bite.</span></div>
+    <header className="header container"><a className="brand" href="#" aria-label="Lokma home"><span className="brand-mark">l.</span>lokma<span className="brand-dot">.</span></a><nav aria-label="Main navigation"><a href="#menu" className="active">Menu</a><a href="#about">Why Lokma?</a><a href="#help">FAQs</a></nav><button className="cart-button" onClick={openCart}><Icon name="bag" /><span>My cart</span><b>{count}</b></button></header>
+    <main>
+      <section className="hero container"><div className="hero-copy"><div className="eyebrow"><span /> FRESHLY MADE. HAPPILY ENJOYED.</div><h1>Whatever you crave,<br /><em>one bite</em> away.</h1><p>Thoughtfully chosen ingredients. Flavours you love.<br />Let us make your next break the best part of your day.</p><a className="primary" href="#menu">Explore the menu <Icon name="arrow" /></a><div className="hero-notes"><span><Icon name="clock" size={17} /> Warm & fresh</span><span><span className="tiny-star">✦</span> Made with care</span></div></div><div className="hero-visual"><img className="hero-image" src={photo("photo-1568901346375-23c9450c58cd", 1100)} alt="Burger with fresh vegetables and melted cheddar" fetchPriority="high" /><div className="image-label">GOOD INGREDIENTS.<br />REAL FLAVOUR.</div><div className="floating-card"><span className="floating-icon">✦</span><div><strong>Today’s favourite</strong><span>Classic Cheeseburger</span></div><button aria-label="Classic Cheeseburger add to cart" onClick={() => add(meals[0])}>↗</button></div><div className="round-stamp">HAPPINESS<br /><b>one bite</b><br />AT A TIME</div></div></section>
+      <div className="perks container"><span><b>01</b> Real ingredients</span><span><b>02</b> Freshly made to order</span><span><b>03</b> Something for everyone</span><span><b>04</b> Joy in every bite</span></div>
+      <section className="menu-section container" id="menu"><div className="section-top"><div><div className="eyebrow">FIND YOUR NEXT FAVOURITE</div><h2>What sounds good today?</h2></div><label className="search"><Icon name="search" /><input value={search} onChange={e => setSearch(e.target.value)} placeholder="What are you craving?" aria-label="Search the menu" />{search && <button aria-label="Clear search" onClick={() => setSearch("")}>×</button>}</label></div><div className="category-bar">{categories.map((item, i) => <button key={item} className={category === item ? "selected" : ""} onClick={() => setCategory(item)} aria-pressed={category === item}><span aria-hidden="true">{["✦", "◒", "◔", "❋", "≋", "♡"][i]}</span>{item}</button>)}<span className="result-count">{shown.length} delicious choices</span></div><div className="meal-grid">{shown.map(meal => <article className="meal-card" key={meal.id}><div className="meal-photo"><img src={photo(meal.image)} alt={meal.name} loading="lazy" /><span className={`tag ${meal.category === "Healthy" || meal.category === "Pizza" ? "green" : ""}`}>{meal.tag}</span></div><div className="meal-info"><div className="meal-meta"><span>{meal.category}</span><span><Icon name="clock" size={13} />{meal.time}</span></div><h3>{meal.name}</h3><p>{meal.description}</p><div className="meal-bottom"><strong>{money(meal.price)}</strong><button onClick={() => add(meal)} aria-label={`${meal.name} add to cart`}><span>Add to cart</span> +</button></div></div></article>)}</div>{shown.length === 0 && <div className="empty-state"><h3>No dishes found.</h3><p>Try another search or explore the full menu.</p><button className="primary" onClick={() => {setSearch(""); setCategory("All");}}>Show all dishes</button></div>}</section>
+      <section className="story container" id="about"><div className="story-symbol">✳</div><div><div className="eyebrow">OUR RECIPE IS SIMPLE</div><h2>Good food. Good mood.</h2><p>Seasonal freshness, a little kitchen care and the joy of sharing<br className="desktop" /> come together at our table. Because every meal deserves to be a good one.</p></div><a href="#menu" className="text-link">Find your favourite <Icon name="arrow" /></a></section>
+      <section id="help" className="faq container"><div><div className="eyebrow">GOOD TO KNOW</div><h2>Little questions,<br />simple answers.</h2></div><div className="faq-items"><details><summary>How do I place an order?</summary><p>Add your favourites to the cart, adjust quantities and fill in the delivery form. This is a demo website: no payment is taken and no delivery is arranged.</p></details><details><summary>Are there vegetarian options?</summary><p>Explore our Pizza and Healthy categories. For allergen information or special dietary requirements, contact the restaurant before placing a real order.</p></details><details><summary>How long does delivery take?</summary><p>The times on our menu are sample preparation and delivery estimates. This demo does not offer a real delivery service.</p></details></div></section>
+    </main><footer className="container"><a href="#" className="brand">lokma<span className="brand-dot">.</span></a><span>Good flavours. Great moments.</span><small>© {new Date().getFullYear()} Lokma · Demo restaurant experience</small></footer>
+    <div className={`toast ${notice ? "visible" : ""}`} role="status">✓ {notice}</div>
+    <dialog ref={dialog} className="cart-dialog" onClick={e => {if(e.target === e.currentTarget) dialog.current?.close();}}><div className="dialog-header"><h2>{stage === "done" ? "Thank you!" : stage === "checkout" ? "Delivery details" : "My cart"}</h2><button className="close" onClick={() => dialog.current?.close()} aria-label="Close cart">×</button></div>{stage === "done" ? <div className="empty-state"><span className="success-icon">✓</span><h3>Your demo order is complete.</h3><p>This is a demo experience. No payment was taken and no real order was placed.</p><button className="primary" onClick={() => dialog.current?.close()}>Back to menu</button></div> : stage === "checkout" ? <form className="checkout" onSubmit={e => {e.preventDefault(); cart.clearCart(); setStage("done");}}><p className="demo-note">Demo order · Your details are not sent or stored.</p><label>Full name<input name="name" required minLength={2} autoComplete="name" /></label><label>Phone number<input name="phone" type="tel" required pattern="[+0-9 ()-]{10,20}" autoComplete="tel" /></label><label>Delivery address<textarea name="address" required minLength={10} autoComplete="street-address" rows={3} /></label><div className="total"><span>Total</span><strong>{money(cart.totalAmount)}</strong></div><button className="primary" type="submit">Complete demo order <Icon name="arrow" /></button><button type="button" className="back" onClick={() => setStage("cart")}>Back to cart</button></form> : cart.items.length ? <><div className="cart-items">{cart.items.map(item => <div key={item.id} className="cart-row"><img src={photo(meals.find(m => m.id === item.id)!.image, 150)} alt="" /><div><h3>{item.name}</h3><strong>{money(item.price * item.amount)}</strong></div><div className="quantity"><button onClick={() => cart.removeItem(item.id)} aria-label={`${item.name} decrease`}>−</button><span>{item.amount}</span><button onClick={() => cart.addItem({...item, amount: 1})} aria-label={`${item.name} increase`}>+</button></div></div>)}</div><div className="total"><span>Total</span><strong>{money(cart.totalAmount)}</strong></div><p className="demo-note">Sample menu and prices · No real payment is taken.</p><button className="primary wide" onClick={() => setStage("checkout")}>Continue to checkout <Icon name="arrow" /></button></> : <div className="empty-state"><Icon name="bag" size={40} /><h3>Your next great bite awaits.</h3><p>Pick your favourites from the menu to fill your cart.</p><button className="primary" onClick={() => dialog.current?.close()}>Explore the menu</button></div>}</dialog>
+  </>;
+}
+export default function Home() { return <CartProvider><Experience /></CartProvider>; }

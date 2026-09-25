@@ -4,9 +4,9 @@ import { CheckoutProps, FormInputValidity } from "@/shared/types";
 import { FC, FormEvent, useRef, useState } from "react";
 import "./Checkout.css";
 
-const isEmpty: (value: any) => boolean = (value) => value.trim() === "";
-const isFiveChars: (value: any) => boolean = (value) =>
-	value.trim().length === 5;
+const isEmpty: (value: string | undefined) => boolean = (value) => (value ?? "").trim() === "";
+const isFiveChars: (value: string | undefined) => boolean = (value) =>
+	(value ?? "").trim().length === 5;
 
 const Checkout: FC<CheckoutProps> = ({ onCancel, onConfirm }) => {
 	const [formInputsValidity, setFormInputsValidity] =

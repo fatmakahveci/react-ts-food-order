@@ -3,13 +3,13 @@
 import CartIcon from "@/app/components/Cart/CartIcon";
 import CartContext from "@/app/store/cart-context";
 import { HeaderCartButtonProps, ItemValue } from "@/shared/types";
-import { FC, useContext, useEffect, useState } from "react";
+import { FC, useContext, useEffect, useRef } from "react";
 import "./HeaderCartButton.css";
 
 const HeaderCartButton: FC<HeaderCartButtonProps> = ({
 	onClick,
 }): JSX.Element => {
-	const [btnIsHighlighted, setBtnIsHighlighted] = useState<boolean>(false);
+	const buttonRef = useRef<HTMLButtonElement>(null);
 	const cartCtx: ItemValue = useContext<ItemValue>(CartContext);
 
 	const { items }: ItemValue = cartCtx;
@@ -22,20 +22,17 @@ const HeaderCartButton: FC<HeaderCartButtonProps> = ({
 		if (items.length === 0) {
 			return;
 		}
-		setBtnIsHighlighted(true);
-
-		const timer = setTimeout(() => {
-			setBtnIsHighlighted(false);
-		}, 300);
-
-		return () => {
-			clearTimeout(timer);
-		};
+		const animation = buttonRef.current?.animate(
+			[{ transform: "scale(1)" }, { transform: "scale(1.1)" }, { transform: "scale(1)" }],
+			{ duration: 300 }
+		);
+		return () => animation?.cancel();
 	}, [items]);
 
 	return (
 		<button
-			className={`button ${btnIsHighlighted ? "bump" : ""}`}
+			ref={buttonRef}
+			className="button"
 			onClick={onClick}
 		>
 			<span className="icon">

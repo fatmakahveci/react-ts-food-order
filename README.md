@@ -7,6 +7,12 @@
 
 A Next.js food-ordering interface with a typed cart, meal selection, modal checkout flow, and reusable UI components.
 
+## Demo
+
+![Lokma demo showing menu browsing, category filtering, cart updates and demo checkout](demo.gif)
+
+Browse the menu, filter dishes, update your cart and complete a demo order. No payment is taken and no real order is placed.
+
 ## Highlights
 
 - Browse available meals and add configurable quantities
@@ -42,8 +48,36 @@ Open http://localhost:3000.
 
 ```bash
 npm run lint
+npm test
 npm run build
 ```
+
+## CI / CD
+
+[![CI / CD](https://github.com/fatmakahveci/react-ts-food-order/actions/workflows/test.yml/badge.svg)](https://github.com/fatmakahveci/react-ts-food-order/actions/workflows/test.yml)
+
+Pull requests targeting `main` run ESLint, automated tests and a production build
+with TypeScript checks. Pushes to `main` run the same checks, then deploy the
+verified `out/` artifact to GitHub Pages. Failed checks prevent deployment.
+The workflow can also be started manually from the Actions tab; only `main` deploys.
+
+GitHub Pages uses **Settings → Pages → Build and deployment → GitHub Actions**.
+No custom deployment token is required: the deployment job uses the built-in
+`GITHUB_TOKEN` with Pages and OIDC permissions. The `github-pages` environment
+controls deployment access; pull requests never receive deployment permissions.
+
+The workflow reads the domain and repository path from Pages settings and sets
+`NEXT_PUBLIC_BASE_PATH` and `SITE_URL` for the build. Local builds keep the root
+path and the existing Sites metadata by default. To reproduce a project-path build:
+
+```bash
+NEXT_PUBLIC_BASE_PATH=/react-ts-food-order \
+SITE_URL=https://fatmakahveci.github.io/react-ts-food-order npm run build
+```
+
+See [GitHub’s Pages workflow documentation](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages)
+for environment protection and publishing settings. The existing release workflow
+continues to publish source packages to GHCR independently.
 
 ## Repository Structure
 
@@ -55,5 +89,5 @@ npm run build
 
 - [Changelog](CHANGELOG.md)
 - [Contributing guide](.github/CONTRIBUTING.md)
-- [Security policy](.github/SECURITY.md)
+- [Security policy](SECURITY.md)
 - [License](LICENSE.md)

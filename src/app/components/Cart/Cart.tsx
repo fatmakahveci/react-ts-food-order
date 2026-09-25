@@ -35,6 +35,7 @@ const Cart: FC<CartProps> = ({ onClose }): JSX.Element => {
 			{cartCtx.items.map((item: CartItemProps) => (
 				<CartItem
 					key={item.id}
+					id={item.id}
 					name={item.name}
 					amount={item.amount}
 					price={item.price}
