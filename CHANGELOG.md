@@ -7,6 +7,10 @@ assigned a release version or release date.
 
 ### Added
 
+- Price sorting, in-cart badges, mobile navigation and a floating order summary.
+- Accessible checkout errors, first-error focus and visible order progress.
+- Larger touch targets and more readable meal cards on small screens.
+
 - Lokma restaurant interface with six sample dishes, category filters and search.
 - Responsive cart, quantity controls, calculated totals and demo checkout.
 - Branded social preview image and a README GIF of the ordering experience.
@@ -38,6 +42,13 @@ assigned a release version or release date.
 - Legacy component types and unused form, date-picker, CSS-tooling and Cypress dependencies.
 
 ### Fixed
+
+- Prevented crashes when removing unknown cart items and rejected invalid quantities/prices.
+- Derived cart totals from line items in minor currency units to prevent decimal drift.
+- Restarted repeated-addition notifications, trimmed search queries, labelled the cart
+  dialog and distinguished padding clicks from backdrop clicks.
+- Split menu data, formatting, filtering and checkout into focused modules and formatted
+  source files for readability.
 
 - Resolved lint issues in retained components with explicit types, an input display
   name and a cart-button animation that does not synchronously set state in an effect.
