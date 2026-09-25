@@ -4,5 +4,10 @@ const currencyFormatter = new Intl.NumberFormat("en-GB", {
   maximumFractionDigits: 0,
 });
 export const money = (value: number) => currencyFormatter.format(value);
-export const photo = (id: string, width = 700) =>
-  `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${width}&q=85`;
+// Public assets need the same build-time prefix as Next.js routes on Pages.
+export const photo = (id: string, width: 160 | 400 | 800 | 1200 = 800) =>
+  `${process.env.NEXT_PUBLIC_BASE_PATH || ""}/images/meals/${id}-${width}.webp`;
+export const photoSrcSet = (id: string) =>
+  ([400, 800, 1200] as const)
+    .map((width) => `${photo(id, width)} ${width}w`)
+    .join(", ");

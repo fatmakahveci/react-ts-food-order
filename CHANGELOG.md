@@ -7,6 +7,11 @@ assigned a release version or release date.
 
 ### Added
 
+- Production-export browser checks at 320, 390, 768 and 1440 pixels, including
+  complete ordering, keyboard navigation, axe scans and asset/metadata validation.
+- Domain repair, test/performance and asset-credit guides.
+- Canonical URL, sitemap, favicon and descriptive social-image metadata.
+
 - Price sorting, in-cart badges, mobile navigation and a floating order summary.
 - Accessible checkout errors, first-error focus and visible order progress.
 - Larger touch targets and more readable meal cards on small screens.
@@ -19,6 +24,11 @@ assigned a release version or release date.
 - Root security policy and a dedicated deployment guide.
 
 ### Changed
+
+- Served responsive WebP menu photos and licensed variable fonts locally.
+- Replaced the incompatible production start command with a static preview server.
+- Added Chromium checks to the deployment gate and refreshed the README recording.
+- Expanded unit regression coverage and documented non-obvious code behavior.
 
 - Refined the restaurant UI with stronger contrast, clearer typography, pill navigation,
   inset food photography, category counts and consistent cart/checkout surfaces.
@@ -46,6 +56,9 @@ assigned a release version or release date.
 - Legacy component types and unused form, date-picker, CSS-tooling and Cypress dependencies.
 
 ### Fixed
+
+- Restored focus after closing the cart and moved focus when checkout steps change.
+- Kept the cart button named on small phones and removed tablet decoration overflow.
 
 - Prevented crashes when removing unknown cart items and rejected invalid quantities/prices.
 - Derived cart totals from line items in minor currency units to prevent decimal drift.

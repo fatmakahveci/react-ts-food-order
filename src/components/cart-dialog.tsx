@@ -18,6 +18,14 @@ export default function CartDialog({ onClose }: { onClose: () => void }) {
     const element = dialog.current;
     element?.showModal();
   }, []);
+  useEffect(() => {
+    // Announce each new step and keep keyboard focus inside the modal.
+    const target =
+      stage === "checkout"
+        ? dialog.current?.querySelector<HTMLInputElement>('input[name="name"]')
+        : dialog.current?.querySelector<HTMLHeadingElement>("#cart-title");
+    target?.focus();
+  }, [stage]);
   return (
     <dialog
       ref={dialog}
@@ -26,6 +34,7 @@ export default function CartDialog({ onClose }: { onClose: () => void }) {
       onCancel={onClose}
       onClose={onClose}
       onClick={(event) => {
+        // Backdrop clicks target the dialog too; bounds distinguish them from its padding.
         const rect = event.currentTarget.getBoundingClientRect();
         if (
           event.target === event.currentTarget &&
@@ -38,7 +47,7 @@ export default function CartDialog({ onClose }: { onClose: () => void }) {
       }}
     >
       <div className="dialog-header">
-        <h2 id="cart-title">
+        <h2 id="cart-title" tabIndex={-1}>
           {stage === "done"
             ? "Thank you!"
             : stage === "checkout"
@@ -103,6 +112,7 @@ export default function CartDialog({ onClose }: { onClose: () => void }) {
               nextErrors.address =
                 "Enter an address with at least 10 characters.";
             setErrors(nextErrors);
+            // Follow field order so keyboard users can correct the first invalid input.
             const firstError = Object.keys(nextErrors)[0];
             if (firstError) {
               (
@@ -110,6 +120,7 @@ export default function CartDialog({ onClose }: { onClose: () => void }) {
               )?.focus();
               return;
             }
+            // Demo completion stays local: delivery details are never sent or persisted.
             cart.clearCart();
             setStage("done");
           }}
@@ -194,7 +205,9 @@ export default function CartDialog({ onClose }: { onClose: () => void }) {
               <div key={item.id} className="cart-row">
                 {mealsById.get(item.id) && (
                   <img
-                    src={photo(mealsById.get(item.id)?.image ?? "", 150)}
+                    src={photo(mealsById.get(item.id)?.image ?? "", 160)}
+                    width={160}
+                    height={120}
                     alt=""
                   />
                 )}

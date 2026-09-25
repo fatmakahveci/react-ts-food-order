@@ -1,10 +1,16 @@
 "use client";
 
-import { useContext, useEffect, useRef, useState } from "react";
+import {
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+  type MouseEvent,
+} from "react";
 import CartProvider from "../context/cart-provider";
 import CartContext from "../context/cart-context";
 import { meals, type Meal } from "@/data/menu";
-import { money, photo } from "@/lib/format";
+import { money, photo, photoSrcSet } from "@/lib/format";
 import Icon from "@/components/icon";
 import MenuSection from "@/components/menu-section";
 import CartDialog from "@/components/cart-dialog";
@@ -16,7 +22,21 @@ function Experience() {
   const [notice, setNotice] = useState("");
   const noticeTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
   const count = cart.items.reduce((sum, item) => sum + item.amount, 0);
-  const openCart = () => setCartOpen(true);
+  const cartTrigger = useRef<HTMLButtonElement | null>(null);
+  const headerCart = useRef<HTMLButtonElement>(null);
+  const openCart = (event: MouseEvent<HTMLButtonElement>) => {
+    cartTrigger.current = event.currentTarget;
+    setCartOpen(true);
+  };
+  useEffect(() => {
+    // The floating trigger can disappear after checkout clears the cart.
+    if (!cartOpen && cartTrigger.current) {
+      const target = cartTrigger.current.isConnected
+        ? cartTrigger.current
+        : headerCart.current;
+      target?.focus({ preventScroll: true });
+    }
+  }, [cartOpen]);
   useEffect(
     () => () => {
       if (noticeTimer.current) clearTimeout(noticeTimer.current);
@@ -31,6 +51,7 @@ function Experience() {
       amount: 1,
     });
     setNotice(`${meal.name} added to your cart`);
+    // Restart the timer even for repeated additions of the same dish.
     if (noticeTimer.current) clearTimeout(noticeTimer.current);
     noticeTimer.current = setTimeout(() => setNotice(""), 2200);
   };
@@ -68,7 +89,12 @@ function Experience() {
         >
           {mobileMenuOpen ? "×" : "☰"}
         </button>
-        <button className="cart-button" onClick={openCart}>
+        <button
+          ref={headerCart}
+          className="cart-button"
+          onClick={openCart}
+          aria-label={`My cart, ${count} ${count === 1 ? "item" : "items"}`}
+        >
           <Icon name="bag" />
           <span>My cart</span>
           <b>{count}</b>
@@ -105,7 +131,11 @@ function Experience() {
           <div className="hero-visual">
             <img
               className="hero-image"
-              src={photo("photo-1568901346375-23c9450c58cd", 1100)}
+              src={photo("classic-cheeseburger", 1200)}
+              srcSet={photoSrcSet("classic-cheeseburger")}
+              sizes="(max-width: 760px) calc(100vw - 52px), (max-width: 1336px) 48vw, 600px"
+              width={1200}
+              height={900}
               alt="Burger with fresh vegetables and melted cheddar"
               fetchPriority="high"
             />

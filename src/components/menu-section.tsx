@@ -1,7 +1,7 @@
 "use client";
 import { useContext, useState } from "react";
 import { categories, meals, type Meal } from "@/data/menu";
-import { money, photo } from "@/lib/format";
+import { money, photo, photoSrcSet } from "@/lib/format";
 import Icon from "./icon";
 import CartContext from "@/context/cart-context";
 
@@ -22,6 +22,7 @@ export default function MenuSection({
         .toLocaleLowerCase("en")
         .includes(query),
   );
+  // Equal comparisons preserve menu order for the featured selection.
   const sorted = [...shown].sort((a, b) =>
     sort === "price-low"
       ? a.price - b.price
@@ -97,6 +98,10 @@ export default function MenuSection({
             <div className="meal-photo">
               <img
                 src={photo(meal.image)}
+                srcSet={photoSrcSet(meal.image)}
+                sizes="(max-width: 480px) calc(100vw - 52px), (max-width: 760px) 45vw, (max-width: 1336px) 30vw, 390px"
+                width={800}
+                height={600}
                 alt={meal.name}
                 loading="lazy"
                 decoding="async"

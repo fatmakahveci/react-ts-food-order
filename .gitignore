@@ -38,5 +38,9 @@ next-env.d.ts
 .swc/
 .*.env
 
+# browser test artifacts
+/playwright-report/
+/test-results/
+
 # Local OpenAI Sites metadata
 .openai/

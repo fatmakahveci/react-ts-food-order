@@ -12,13 +12,14 @@ The [CI / CD workflow](../.github/workflows/ci.yml) runs on:
 
 | Event | Checks | Deployment |
 | --- | --- | --- |
-| Pull request targeting `main` | Lint, tests, build and export verification | No |
+| Pull request targeting `main` | Lint, unit tests, build, export verification and browser tests | No |
 | Push to `main` | Same checks, plus Pages configuration | Yes, after checks pass |
 | Manual workflow dispatch | Same checks | Only when the selected branch is `main` |
 
 The checks job installs the lockfile dependencies with `npm ci --ignore-scripts`
 on Node.js 22, audits dependencies, runs ESLint and tests, and builds with TypeScript validation. It
-checks that `out/index.html` and `out/og.png` exist before uploading the Pages
+checks that `out/index.html` and `out/og.png` exist, then runs Chromium ordering,
+keyboard, responsive and axe checks against that export before uploading the Pages
 artifact. The deployment job depends on successful checks and deploys that same
 artifact without rebuilding.
 
@@ -48,7 +49,7 @@ rebuilding does not update existing files.
 | Variable | Purpose | Local default |
 | --- | --- | --- |
 | `NEXT_PUBLIC_BASE_PATH` | Prefix for Next.js routes and assets, such as `/react-ts-food-order`. Use an empty value for a root-hosted site. | Empty |
-| `SITE_URL` | Absolute deployment URL, including any repository path, used for social metadata. | `https://lokma-lezzet.fatmakhv.chatgpt.site` |
+| `SITE_URL` | Absolute deployment URL, including any repository path, used for social metadata. | `https://fatmakahveci.com/react-ts-food-order/` |
 
 For `main`, the workflow reads the base path and site URL from `configure-pages`.
 Pull request builds use `/react-ts-food-order` and
@@ -63,7 +64,9 @@ SITE_URL=https://fatmakahveci.github.io/react-ts-food-order npm run build
 
 For a root-hosted local preview, run `npm run build` without these overrides and
 serve `out/` as described in the [README](../README.md). A project-path build must
-be served at its configured path, not directly at the server root.
+be served at its configured path. Run
+`NEXT_PUBLIC_BASE_PATH=/react-ts-food-order npm start` or use the same variable
+with `npm run test:e2e`; the preview server mounts `out/` at that prefix.
 
 ## Troubleshooting
 
@@ -95,6 +98,10 @@ resolve from the verification environment. This is a recorded observation, not a
 live health check. Verify current Pages and DNS settings before changing them.
 An inherited account-level custom domain can affect other repositories; review
 that scope before removing or changing it.
+
+The follow-up check confirmed `SERVFAIL` at the DNS resolver. The owner chose to
+keep the domain. Follow the [provider repair steps](domain-repair.md); DNS and
+HTTPS restoration remain external prerequisites for public access.
 
 ## Source Packages
 

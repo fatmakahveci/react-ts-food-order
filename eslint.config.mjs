@@ -5,9 +5,16 @@ import nextTypescript from "eslint-config-next/typescript";
 export default defineConfig([
   ...nextVitals,
   ...nextTypescript,
-  globalIgnores([".next/**", "out/**", "build/**", "next-env.d.ts"]),
+  globalIgnores([
+    ".next/**",
+    "out/**",
+    "build/**",
+    "next-env.d.ts",
+    "playwright-report/**",
+    "test-results/**",
+  ]),
   {
-    // The static export uses externally hosted, responsive food photographs.
+    // The static export uses pre-generated responsive food photographs.
     rules: { "@next/next/no-img-element": "off" },
   },
 ]);
