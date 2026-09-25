@@ -1,93 +1,98 @@
-# React Food Ordering Experience
+# Lokma — Food Ordering Demo
 
+[![CI / CD](https://github.com/fatmakahveci/react-ts-food-order/actions/workflows/ci.yml/badge.svg)](https://github.com/fatmakahveci/react-ts-food-order/actions/workflows/ci.yml)
 [![React](https://img.shields.io/badge/React-TypeScript-149ECA?logo=react&logoColor=white)](https://react.dev/)
-[![Next.js](https://img.shields.io/badge/Next.js-React-000000?logo=next.js&logoColor=white)](https://nextjs.org/)
-[![Last commit](https://img.shields.io/github/last-commit/fatmakahveci/react-ts-food-order)](https://github.com/fatmakahveci/react-ts-food-order/commits/main)
+[![Next.js](https://img.shields.io/badge/Next.js-Static_export-000000?logo=next.js&logoColor=white)](https://nextjs.org/)
 [![License](https://img.shields.io/badge/License-Apache--2.0-blue.svg)](LICENSE.md)
 
-A Next.js food-ordering interface with a typed cart, meal selection, modal checkout flow, and reusable UI components.
+An English-language restaurant demo built with Next.js 16, React 19 and TypeScript 6.
+Browse dishes, find a favourite and try the cart and checkout flow on desktop or mobile.
 
 ## Demo
 
-![Lokma demo showing menu browsing, category filtering, cart updates and demo checkout](demo.gif)
+![Lokma demo showing menu browsing, category filtering, cart updates and demo checkout](docs/assets/demo.gif)
 
-Browse the menu, filter dishes, update your cart and complete a demo order. No payment is taken and no real order is placed.
+This is a frontend demonstration. No payment is taken, no order is sent to a
+restaurant and no delivery is arranged. Use fictional details when trying checkout.
 
-## Highlights
+## Features
 
-- Browse available meals and add configurable quantities
-- Review, increment, decrement, and remove cart items
-- Context-based cart state and derived totals
-- Checkout form and responsive modal interaction
+- Six sample dishes with photos, descriptions and preparation estimates.
+- Category filters and text search with an empty-results state.
+- Cart quantities, item removal and automatically calculated totals.
+- Delivery form and clearly labelled demo order confirmation.
+- Responsive layout, labelled controls and reduced-motion support.
+- English page metadata and a branded social preview image.
 
-## Technology
+Menu prices are sample amounts in **TRY**, formatted using the English locale.
+Cart state stays in memory and resets when the page reloads. The active checkout
+does not send or persist the entered details. Food images load from Unsplash and
+fonts load from Google Fonts, so those assets require an internet connection.
 
-- Next.js
-- React
-- TypeScript
-- React Context
-- Cypress
+## Quick Start
 
-## Getting Started
-
-### Prerequisites
-
-- Node.js 20 or newer
-- npm
-
-### Installation
+Use **Node.js 22.13 or newer within the 22.x release line** and npm to match CI.
+The test dependencies require a newer Node.js version than Next.js alone.
+No API keys or environment variables are needed for local development.
 
 ```bash
-npm install
+git clone https://github.com/fatmakahveci/react-ts-food-order.git
+cd react-ts-food-order
+npm ci --ignore-scripts
 npm run dev
 ```
 
-Open http://localhost:3000.
+Open [localhost:3000](http://localhost:3000).
 
-## Quality Checks
+## Commands
+
+| Command | Purpose |
+| --- | --- |
+| `npm run dev` | Start the local development server. |
+| `npm run lint` | Check source files with ESLint. |
+| `npm test` | Run Node.js tests, then Vitest and React Testing Library tests. |
+| `npm run build` | Build, check TypeScript and export the static site to `out/`. |
+
+The configured output is a static export. The retained `npm start` script runs
+`next start`, which is not the serving path for this export. To preview a production
+build with Python 3 installed:
 
 ```bash
-npm run lint
-npm test
 npm run build
+python3 -m http.server 3000 --directory out
 ```
 
-## CI / CD
+## Project Structure
 
-[![CI / CD](https://github.com/fatmakahveci/react-ts-food-order/actions/workflows/test.yml/badge.svg)](https://github.com/fatmakahveci/react-ts-food-order/actions/workflows/test.yml)
-
-Pull requests targeting `main` run ESLint, automated tests and a production build
-with TypeScript checks. Pushes to `main` run the same checks, then deploy the
-verified `out/` artifact to GitHub Pages. Failed checks prevent deployment.
-The workflow can also be started manually from the Actions tab; only `main` deploys.
-
-GitHub Pages uses **Settings → Pages → Build and deployment → GitHub Actions**.
-No custom deployment token is required: the deployment job uses the built-in
-`GITHUB_TOKEN` with Pages and OIDC permissions. The `github-pages` environment
-controls deployment access; pull requests never receive deployment permissions.
-
-The workflow reads the domain and repository path from Pages settings and sets
-`NEXT_PUBLIC_BASE_PATH` and `SITE_URL` for the build. Local builds keep the root
-path and the existing Sites metadata by default. To reproduce a project-path build:
-
-```bash
-NEXT_PUBLIC_BASE_PATH=/react-ts-food-order \
-SITE_URL=https://fatmakahveci.github.io/react-ts-food-order npm run build
+```text
+src/app/page.tsx         Active menu, filters, cart and demo checkout
+src/app/layout.tsx       Document language and social metadata
+src/app/globals.css      Shared styling and responsive layout
+src/context/             Cart context and reducer
+src/shared/              Shared TypeScript types and constants
+public/og.png            Social preview image
+docs/assets/demo.gif     README demo recording
+tests/                   Metadata, cart and menu tests
+.github/workflows/       CI, Pages deployment and source-package publishing
+docs/                    Deployment guide
 ```
 
-See [GitHub’s Pages workflow documentation](https://docs.github.com/en/pages/getting-started-with-github-pages/using-custom-workflows-with-github-pages)
-for environment protection and publishing settings. The existing release workflow
-continues to publish source packages to GHCR independently.
+The active home page uses `CartProvider` and its own ordering interface.
+Menu data and the checkout interface are defined in `src/app/page.tsx`.
 
-## Repository Structure
+## CI and Deployment
 
-- `src/app/components/Meals` — meal catalogue and quantity controls
-- `src/app/components/Cart` — cart and checkout experience
-- `src/app/store` — typed cart context and reducer
+Pull requests targeting `main` run lint, tests and the production build. Successful
+pushes to `main` deploy the verified static output to GitHub Pages. Deployment is
+skipped for pull requests. Changes to `main` must go through a pull request.
 
-## Project Resources
+See the [deployment guide](docs/deployment.md) for build variables, Pages setup,
+custom-domain troubleshooting and the separate source-package workflow.
 
+## Documentation
+
+- [Deployment guide](docs/deployment.md)
+- [Contributing](.github/CONTRIBUTING.md)
 - [Changelog](CHANGELOG.md)
-- [Contributing guide](.github/CONTRIBUTING.md)
 - [Security policy](SECURITY.md)
-- [License](LICENSE.md)
+- [Apache 2.0 license](LICENSE.md)
