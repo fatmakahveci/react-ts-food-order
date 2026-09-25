@@ -27,8 +27,8 @@ restaurant and no delivery is arranged. Use fictional details when trying checko
 
 Menu prices are sample amounts in **TRY**, formatted using the English locale.
 Cart state stays in memory and resets when the page reloads. The active checkout
-does not send or persist the entered details. Food images load from Unsplash and
-fonts load from Google Fonts, so those assets require an internet connection.
+does not send or persist the entered details. Food images and licensed fonts are served locally with the site. See the
+[asset credits](docs/assets.md) for their sources.
 
 ## Quick Start
 
@@ -52,16 +52,23 @@ Open [localhost:3000](http://localhost:3000).
 | `npm run dev` | Start the local development server. |
 | `npm run lint` | Check source files with ESLint. |
 | `npm test` | Run Node.js tests, then Vitest and React Testing Library tests. |
+| `npm run test:e2e` | Run Chromium ordering, keyboard, responsive and accessibility checks against `out/`. |
+| `npm start` | Preview the existing static export at `http://127.0.0.1:4173`. |
 | `npm run build` | Build, check TypeScript and export the static site to `out/`. |
 
-The configured output is a static export. The retained `npm start` script runs
-`next start`, which is not the serving path for this export. To preview a production
-build with Python 3 installed:
+To preview and test the production export:
 
 ```bash
 npm run build
-python3 -m http.server 3000 --directory out
+npm start
+# In another terminal, after stopping the preview server:
+npx playwright install chromium
+npm run test:e2e
 ```
+
+The browser suite starts and stops its own preview server. Do not run `npm start`
+on port 4173 at the same time. See the [testing guide](docs/testing.md) for
+repository-path builds, browser coverage and performance measurements.
 
 ## Project Structure
 
@@ -76,7 +83,8 @@ src/context/             Cart context and reducer
 src/shared/              Shared TypeScript types and constants
 public/og.png            Social preview image
 docs/assets/demo.gif     README demo recording
-tests/                   Metadata, cart and menu tests
+tests/                   Metadata, cart, menu and browser tests
+scripts/serve-export.mjs Local static-export preview server
 .github/workflows/       CI, Pages deployment and source-package publishing
 docs/                    Deployment guide
 ```
@@ -87,7 +95,8 @@ Menu data lives in `src/data/menu.ts`; filtering and checkout live in
 
 ## CI and Deployment
 
-Pull requests targeting `main` run lint, tests and the production build. Successful
+Pull requests targeting `main` run lint, unit tests, the production build and
+Chromium checks at four viewport sizes. Successful
 pushes to `main` deploy the verified static output to GitHub Pages. Deployment is
 skipped for pull requests. Changes to `main` must go through a pull request.
 
@@ -97,6 +106,9 @@ custom-domain troubleshooting and the separate source-package workflow.
 ## Documentation
 
 - [Deployment guide](docs/deployment.md)
+- [Custom-domain repair](docs/domain-repair.md)
+- [Testing and performance](docs/testing.md)
+- [Asset credits](docs/assets.md)
 - [Contributing](.github/CONTRIBUTING.md)
 - [Changelog](CHANGELOG.md)
 - [Security policy](SECURITY.md)

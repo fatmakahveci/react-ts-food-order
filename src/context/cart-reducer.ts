@@ -24,7 +24,9 @@ export function cartReducer(state: CartState, action: CartAction): CartState {
         return state;
       const existing = state.items.find((entry) => entry.id === item.id);
       const amount = (existing?.amount ?? 0) + item.amount;
+      // Quantity updates keep the price captured when the item entered the cart.
       const price = existing?.price ?? item.price;
+      // Reject amounts that cannot be represented exactly as integer cents.
       if (
         !Number.isSafeInteger(amount) ||
         !Number.isSafeInteger(Math.round(price * 100) * amount)

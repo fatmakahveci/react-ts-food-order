@@ -3,6 +3,8 @@ import { afterEach, describe, expect, it } from "vitest";
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
 import CartProvider from "../src/context/cart-provider";
 import CartContext from "../src/context/cart-context";
+import { cartReducer } from "../src/context/cart-reducer";
+import { DEFAULT_CART_STATE } from "../src/shared/constants";
 
 afterEach(cleanup);
 
@@ -64,8 +66,6 @@ describe("cart behavior", () => {
 });
 
 // The reducer also needs to stay safe when called outside the menu UI.
-import { cartReducer } from "../src/context/cart-reducer";
-import { DEFAULT_CART_STATE } from "../src/shared/constants";
 
 describe("cart edge cases", () => {
   const item = { id: "test", name: "Test meal", price: 0.1, amount: 1 };
@@ -112,5 +112,81 @@ describe("cart edge cases", () => {
         item: { ...item, ...invalid },
       }),
     ).toBe(DEFAULT_CART_STATE);
+  });
+});
+
+describe("cart state integrity", () => {
+  it("updates one line without mutating the previous state or other items", () => {
+    const soup = Object.freeze({
+      id: "soup",
+      name: "Soup",
+      price: 0.1,
+      amount: 3,
+    });
+    const bread = Object.freeze({
+      id: "bread",
+      name: "Bread",
+      price: 0.2,
+      amount: 2,
+    });
+    const items = [soup, bread];
+    Object.freeze(items);
+    const original = Object.freeze({ items, totalAmount: 0.7 });
+    const next = cartReducer(original, { type: "REMOVE", id: "soup" });
+    expect(next).toEqual({
+      items: [{ ...soup, amount: 2 }, bread],
+      totalAmount: 0.6,
+    });
+    expect(original.items[0].amount).toBe(3);
+    expect(original.totalAmount).toBe(0.7);
+    expect(cartReducer(next, { type: "ADD", item: bread })).toEqual({
+      items: [
+        { ...soup, amount: 2 },
+        { ...bread, amount: 4 },
+      ],
+      totalAmount: 1,
+    });
+  });
+
+  it("rejects quantity overflow even when the item is free", () => {
+    const item = {
+      id: "free",
+      name: "Free sample",
+      price: 0,
+      amount: Number.MAX_SAFE_INTEGER,
+    };
+    const full = cartReducer(DEFAULT_CART_STATE, { type: "ADD", item });
+    expect(full.items).toHaveLength(1);
+    expect(
+      cartReducer(full, { type: "ADD", item: { ...item, amount: 1 } }),
+    ).toBe(full);
+  });
+
+  it("rejects an unsafe line total", () => {
+    expect(
+      cartReducer(DEFAULT_CART_STATE, {
+        type: "ADD",
+        item: {
+          id: "large",
+          name: "Large order",
+          price: 1,
+          amount: Number.MAX_SAFE_INTEGER,
+        },
+      }),
+    ).toBe(DEFAULT_CART_STATE);
+  });
+
+  it("rejects combined total overflow when each line is individually safe", () => {
+    const item = {
+      id: "first",
+      name: "Large order",
+      price: 1,
+      amount: 50_000_000_000_000,
+    };
+    const first = cartReducer(DEFAULT_CART_STATE, { type: "ADD", item });
+    expect(first.totalAmount).toBe(item.amount);
+    expect(
+      cartReducer(first, { type: "ADD", item: { ...item, id: "second" } }),
+    ).toBe(first);
   });
 });

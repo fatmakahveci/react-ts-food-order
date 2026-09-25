@@ -37,3 +37,7 @@ next-env.d.ts
 .next/
 .swc/
 .*.env
+
+# browser test artifacts
+/playwright-report/
+/test-results/

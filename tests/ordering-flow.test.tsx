@@ -12,6 +12,7 @@ import Home from "../src/app/page";
 afterEach(() => {
   cleanup();
   vi.useRealTimers();
+  vi.restoreAllMocks();
 });
 HTMLDialogElement.prototype.showModal = function () {
   this.setAttribute("open", "");
@@ -207,5 +208,130 @@ describe("browsing improvements", () => {
       screen.getByRole("dialog", { name: "Delivery details" }),
     ).toBeTruthy();
     expect(screen.queryByText("Your demo order is complete.")).toBeNull();
+  });
+});
+
+describe("menu and checkout accessibility", () => {
+  const openCheckout = () => {
+    render(<Home />);
+    fireEvent.click(
+      screen.getByRole("button", { name: "Margherita Pizza add to cart" }),
+    );
+    fireEvent.click(screen.getByRole("button", { name: "View order summary" }));
+    fireEvent.click(
+      screen.getByRole("button", { name: "Continue to checkout" }),
+    );
+  };
+  const submit = () =>
+    fireEvent.submit(
+      screen
+        .getByRole("button", { name: "Complete demo order" })
+        .closest("form")!,
+    );
+  const fill = (label: string, value: string) =>
+    fireEvent.change(screen.getByLabelText(label), { target: { value } });
+
+  it("restores featured order after descending price sorting", () => {
+    render(<Home />);
+    const titles = () =>
+      screen
+        .getAllByRole("article")
+        .map((card) => within(card).getByRole("heading").textContent);
+    const featured = titles();
+    const sort = screen.getByRole("combobox", { name: "Sort by" });
+    fireEvent.change(sort, { target: { value: "price-high" } });
+    expect(titles()).toEqual([
+      "Margherita Pizza",
+      "Italian Pasta",
+      "Classic Cheeseburger",
+      "Mediterranean Bowl",
+      "Garden Salad",
+      "Chocolate Brownie",
+    ]);
+    fireEvent.change(sort, { target: { value: "featured" } });
+    expect(titles()).toEqual(featured);
+  });
+
+  it("clears search while preserving the selected category", () => {
+    render(<Home />);
+    const category = screen.getByRole("button", { name: "Healthy" });
+    fireEvent.click(category);
+    fireEvent.change(screen.getByRole("textbox", { name: "Search the menu" }), {
+      target: { value: "lemon" },
+    });
+    expect(screen.getAllByRole("article")).toHaveLength(1);
+    expect(screen.getByRole("heading", { name: "Garden Salad" })).toBeTruthy();
+    fireEvent.click(screen.getByRole("button", { name: "Clear search" }));
+    expect(screen.getAllByRole("article")).toHaveLength(2);
+    expect(category.getAttribute("aria-pressed")).toBe("true");
+  });
+
+  it("links validation errors to fields and recovers after correction", () => {
+    openCheckout();
+    submit();
+    for (const label of ["Full name", "Phone number", "Delivery address"]) {
+      const field = screen.getByLabelText(label);
+      expect(field.getAttribute("aria-invalid")).toBe("true");
+      const error = document.getElementById(
+        field.getAttribute("aria-describedby")!,
+      );
+      expect(error?.getAttribute("role")).toBe("alert");
+      expect(error?.textContent).toBeTruthy();
+    }
+    fill("Full name", "Alex Taylor");
+    submit();
+    expect(document.activeElement).toBe(screen.getByLabelText("Phone number"));
+    expect(
+      screen.getByLabelText("Full name").getAttribute("aria-invalid"),
+    ).toBe("false");
+    expect(
+      screen.getByLabelText("Full name").hasAttribute("aria-describedby"),
+    ).toBe(false);
+    fill("Phone number", "+44 (7700) 900-000");
+    fill("Delivery address", "1 Example Street, London");
+    submit();
+    expect(screen.queryAllByRole("alert")).toHaveLength(0);
+    expect(screen.getByRole("dialog", { name: "Thank you!" })).toBeTruthy();
+    const progress = screen.getByRole("list", { name: "Order progress" });
+    expect(
+      progress.querySelector('[aria-current="step"]')?.textContent,
+    ).toContain("All done");
+  });
+
+  it.each(["123456789", "1234567890123456", "0770090000x"])(
+    "rejects invalid phone number %s without clearing the cart",
+    (phone) => {
+      openCheckout();
+      fill("Full name", "Alex Taylor");
+      fill("Phone number", phone);
+      fill("Delivery address", "1 Example Street, London");
+      submit();
+      expect(screen.getAllByRole("alert")).toHaveLength(1);
+      expect(document.activeElement).toBe(
+        screen.getByLabelText("Phone number"),
+      );
+      fireEvent.click(screen.getByRole("button", { name: "Back to cart" }));
+      expect(
+        within(screen.getByRole("dialog")).getByRole("heading", {
+          name: "Margherita Pizza",
+        }),
+      ).toBeTruthy();
+    },
+  );
+
+  it("handles native dialog cancellation without losing cart contents", () => {
+    openCheckout();
+    fireEvent(
+      screen.getByRole("dialog"),
+      new Event("cancel", { cancelable: true }),
+    );
+    expect(screen.queryByRole("dialog")).toBeNull();
+    fireEvent.click(screen.getByRole("button", { name: "View order summary" }));
+    expect(screen.getByRole("dialog", { name: "My cart" })).toBeTruthy();
+    expect(
+      within(screen.getByRole("dialog")).getByRole("heading", {
+        name: "Margherita Pizza",
+      }),
+    ).toBeTruthy();
   });
 });

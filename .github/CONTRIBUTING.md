@@ -52,11 +52,15 @@ For code changes, run:
 npm run lint
 npm test
 npm run build
+npx playwright install chromium
+npm run test:e2e
 ```
 
 The build includes TypeScript checks; there is no separate `typecheck` script.
 `npm test` runs the Node.js metadata test followed by Vitest tests for cart
-behaviour, filtering and demo checkout.
+behaviour, filtering and demo checkout. `npm run test:e2e` separately tests the
+production export in Chromium at four viewport sizes, including axe scans and
+keyboard navigation. See [testing](../docs/testing.md).
 
 Add regression tests when behaviour changes. For documentation-only changes,
 verify commands and file paths against the repository, check relative links and
