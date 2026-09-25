@@ -20,6 +20,10 @@ assigned a release version or release date.
 
 ### Changed
 
+- Refined the restaurant UI with stronger contrast, clearer typography, pill navigation,
+  inset food photography, category counts and consistent cart/checkout surfaces.
+- Positioned in-cart badges over images to avoid shifting card content.
+
 - Updated Next.js and its ESLint configuration to 16.3.6, React and React DOM to
   19.3.0, TypeScript to 6.0.3 and Vitest to 5.0.2.
 - Updated React and Node.js type definitions and pinned PostCSS and Sharp overrides.

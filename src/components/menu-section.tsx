@@ -35,6 +35,9 @@ export default function MenuSection({
         <div>
           <div className="eyebrow">FIND YOUR NEXT FAVOURITE</div>
           <h2>What sounds good today?</h2>
+          <p className="section-description">
+            Freshly made favourites, ready for your next good moment.
+          </p>
         </div>
         <label className="search">
           <Icon name="search" />
@@ -59,8 +62,15 @@ export default function MenuSection({
             onClick={() => setCategory(item)}
             aria-pressed={category === item}
           >
-            <span aria-hidden="true">{["✦", "◒", "◔", "❋", "≋", "♡"][i]}</span>
+            <span className="category-icon" aria-hidden="true">
+              {["✦", "◒", "◔", "❋", "≋", "♡"][i]}
+            </span>
             {item}
+            <span className="category-count" aria-hidden="true">
+              {item === "All"
+                ? meals.length
+                : meals.filter((meal) => meal.category === item).length}
+            </span>
           </button>
         ))}
       </div>
@@ -96,14 +106,14 @@ export default function MenuSection({
               >
                 {meal.tag}
               </span>
-            </div>
-            <div className="meal-info">
               {cart.items.some((item) => item.id === meal.id) && (
                 <span className="in-cart-badge">
                   ✓ {cart.items.find((item) => item.id === meal.id)?.amount} in
                   cart
                 </span>
               )}
+            </div>
+            <div className="meal-info">
               <div className="meal-meta">
                 <span>{meal.category}</span>
                 <span>
