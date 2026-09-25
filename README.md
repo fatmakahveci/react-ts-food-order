@@ -18,9 +18,10 @@ restaurant and no delivery is arranged. Use fictional details when trying checko
 ## Features
 
 - Six sample dishes with photos, descriptions and preparation estimates.
-- Category filters and text search with an empty-results state.
+- Category filters, price sorting and text search with an empty-results state.
 - Cart quantities, item removal and automatically calculated totals.
-- Delivery form and clearly labelled demo order confirmation.
+- Delivery form with inline validation, progress steps and demo order confirmation.
+- Mobile navigation, in-cart indicators and a floating order summary.
 - Responsive layout, labelled controls and reduced-motion support.
 - English page metadata and a branded social preview image.
 
@@ -65,9 +66,12 @@ python3 -m http.server 3000 --directory out
 ## Project Structure
 
 ```text
-src/app/page.tsx         Active menu, filters, cart and demo checkout
+src/app/page.tsx         Page layout and ordering coordination
 src/app/layout.tsx       Document language and social metadata
 src/app/globals.css      Shared styling and responsive layout
+src/components/          Menu and cart dialog components
+src/data/menu.ts         Typed menu catalogue
+src/lib/format.ts        Shared currency and image helpers
 src/context/             Cart context and reducer
 src/shared/              Shared TypeScript types and constants
 public/og.png            Social preview image
@@ -78,7 +82,8 @@ docs/                    Deployment guide
 ```
 
 The active home page uses `CartProvider` and its own ordering interface.
-Menu data and the checkout interface are defined in `src/app/page.tsx`.
+Menu data lives in `src/data/menu.ts`; filtering and checkout live in
+`src/components/menu-section.tsx` and `src/components/cart-dialog.tsx`.
 
 ## CI and Deployment
 

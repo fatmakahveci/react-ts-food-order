@@ -11,7 +11,8 @@ user-facing text and documentation in English.
 - Discuss substantial changes in an issue before implementing them.
 - Report vulnerabilities privately using the [security policy](../SECURITY.md).
 - Read the README's project structure: the current interface lives in
-  `src/app/page.tsx`, with cart state in `src/context/`.
+  `src/app/page.tsx` composes the menu and cart components in `src/components/`,
+  with menu data in `src/data/` and cart state in `src/context/`.
 
 ## Local Development
 
