@@ -53,7 +53,7 @@ Build-time and test-time prefixes must match:
 
 ```bash
 NEXT_PUBLIC_BASE_PATH=/react-ts-food-order \
-SITE_URL=https://fatmakahveci.com/react-ts-food-order npm run build
+SITE_URL=https://fatmakahveci.github.io/react-ts-food-order npm run build
 NEXT_PUBLIC_BASE_PATH=/react-ts-food-order npm run test:e2e
 ```
 
