@@ -1,8 +1,8 @@
 import { useContext } from "react";
 import { afterEach, describe, expect, it } from "vitest";
 import { cleanup, fireEvent, render, screen } from "@testing-library/react";
-import CartProvider from "../src/app/store/CartProvider";
-import CartContext from "../src/app/store/cart-context";
+import CartProvider from "../src/context/cart-provider";
+import CartContext from "../src/context/cart-context";
 
 afterEach(cleanup);
 

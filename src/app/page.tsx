@@ -1,8 +1,8 @@
 "use client";
 
 import { useContext, useEffect, useRef, useState } from "react";
-import CartProvider from "./store/CartProvider";
-import CartContext from "./store/cart-context";
+import CartProvider from "../context/cart-provider";
+import CartContext from "../context/cart-context";
 
 const photo = (id: string, width = 700) => `https://images.unsplash.com/${id}?auto=format&fit=crop&w=${width}&q=85`;
 const meals = [
